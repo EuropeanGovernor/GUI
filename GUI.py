@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FC
 from PyQt5.QtWidgets import QApplication, QPushButton, QMainWindow, QVBoxLayout, QWidget
 import datetime
+import api
 plt.rcParams["font.sans-serif"] = ["SimHei"]  # 设置字体
 plt.rcParams["axes.unicode_minus"] = False  # 该语句解决图像中的“-”负号的乱码问题
 
@@ -36,13 +37,16 @@ class Mainui(QMainWindow,QWidget):
         tool4 =QAction(QIcon('.\\height.png'), '更新身高', self)
         tool5 = QAction(QIcon('.\\illness.png'), '添加状态', self)
         tool6 = QAction(QIcon('.\\meal.png'), '记录', self)
+        tool7 = QAction(QIcon('.\\news.png'), '评估', self)
 
         tb.addAction(tool1)
+        tb.addAction(tool7)
         tb.addAction(tool2)
         tb.addAction(tool3)
         tb.addAction(tool4)
         tb.addAction(tool5)
         tb.addAction(tool6)
+
 
         tool1.triggered.connect(self.history)
         tool2.triggered.connect(self.statistic)
@@ -50,6 +54,7 @@ class Mainui(QMainWindow,QWidget):
         tool4.triggered.connect(self.height)
         tool5.triggered.connect(self.status)
         tool6.triggered.connect(self.meal)
+        tool7.triggered.connect(self.assess)
 
         self.main_widget = QtWidgets.QWidget()
         self.label = QtWidgets.QLabel(self.main_widget)
@@ -116,6 +121,27 @@ class Mainui(QMainWindow,QWidget):
         self.setWindowTitle('健康食谱')
         self.setFixedSize(2000,1236)
         self.center()
+    def assess(self):
+        dialog = QDialog()
+        dialog.setWindowTitle('饮食评估')
+        dialog.setWindowModality(Qt.ApplicationModal)
+        dialog.resize(1500, 927)
+
+        pic = QLabel(dialog)
+        png = QPixmap()
+        png.load("./1.jpg")
+        pic.resize(1500, 927)
+        pic.setPixmap(png)
+
+        hbox=QHBoxLayout(dialog)
+        label = QLabel(dialog)
+        label.setGeometry(100, 100, 1300, 827)
+        label.setStyleSheet("QLabel{color:black;font-size:30px;font-family:'楷体';}")
+        label.setText(api.week_assess()[1])
+        label.setWordWrap(True)
+        dialog.setLayout(hbox)
+        dialog.exec()
+
     def ref(self):
         #更新当日菜谱
         print('hello')
@@ -507,13 +533,16 @@ class DataGrid(QWidget):
                                      "; background-color: rgb(244, 244, 244);")
         # 设置表格表头
         self.queryModel.setHeaderData(0, Qt.Horizontal, "名称")
-
         self.tableView.doubleClicked.connect(self.doubleClickedHandle)
     #接口
     def doubleClickedHandle(self, index):
         num, ok = QInputDialog.getDouble(self, '记录', '请输入份数：', min=0)
-        print(num)
-        print(index.row())
+        if num>0:
+            con = sqlite3.connect('.\db.db')
+            cursor = con.cursor()
+            sql = "select menu from today_menu"
+            results = cursor.execute(sql).fetchall()
+            api.add2_todayselect(results[10*(self.currentPage-1)+index.row()][0],num)
     # 得到记录数
     def getTotalRecordCount(self):
         self.queryModel.setQuery(f"select * from {self.mode}")
