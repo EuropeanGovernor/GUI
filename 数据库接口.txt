@@ -31,7 +31,7 @@
 6.##将菜品添加到today_select
 	def add2_todayselect(name,p):
 	
-	###  输入的name是一个菜名字符串,p是int份数
+	###  输入的name是一个菜名字符串,p是浮点份数
 	
 7.##周食谱评估
 	def week_assess():
