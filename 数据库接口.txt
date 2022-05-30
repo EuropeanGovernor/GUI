@@ -51,6 +51,10 @@
 	def get_status():#####返回字符串列表，例如 a=['头痛']。没有则为空列表
 	return a
 	
+10.####获取周营养标准
+	def get_weekstandard():
+	return criterion
+	####criterion是浮点数列表，例如[128.0, 57.0, 256.0, 35000, 210, 700, 7000, 87.5, 10.5, 210, 2049.0]
 	
 	
 	
