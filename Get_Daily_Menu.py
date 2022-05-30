@@ -49,7 +49,8 @@ def get_url():
                 continue
             return item["link"]
 
-def process_Url(url):
+def process_Url():
+    url = get_url()
     driver.get(url)
     # 获取页面源代码
     html_source = driver.page_source
@@ -114,6 +115,6 @@ def estract_Dishes(pattern, items):
     s.add2_todaymenu(today_menu_list) # 将菜品添加到当日菜品库中
         
                 
-if __name__ == '__main__':#直接调用main运行即可
-    process_Url(get_url())    
+if __name__ == '__main__':
+    process_Url()    
     
