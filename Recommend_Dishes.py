@@ -9,6 +9,9 @@ today_menu = s.get_todaymenu()
 Dish2nur = dict()
 Search_limit = [0.28, 0.32, 0.40] #每一种菜品分配的比例值
 
+Breakfast = ["小米粥", "油条", "烧麦", "韭菜大包子", "胡萝卜大包子", "肉大包子", "肉馅饼", "韭菜馅饼", "芝麻饼", 
+				"素大包", "开花馒头", "花卷", "南瓜饼", "土豆丝卷饼", "油炸糕", "豆沙饼", "肉夹馍", "素包子"] # 去掉早餐
+
 for dish in today_menu:
 	tmp = list()
 	tmp.append(dish)
@@ -58,8 +61,8 @@ def Analyze_current_body_state():
 			protein_index = 1.1
 	
 	personal_data = s.get_latest_pd()
-	normal_intake_tuple = calories.nutrition(personal_data[1], personal_data[0], "F")
-	# normal_intake_tuple = calories.nutrition(personal_data[1], personal_data[0], s.get_sex())
+	# normal_intake_tuple = calories.nutrition(personal_data[1], personal_data[0], "F")
+	normal_intake_tuple = calories.nutrition(personal_data[1], personal_data[0], s.get_sex())
 	normal_intake = list()
 	for ele in normal_intake_tuple:
 		normal_intake.append(ele)
@@ -105,9 +108,9 @@ def Recommend_lunch():
 			if len(lunch_list) >= 4: #默认推荐为三种菜品+主食
 				break;
 				
-			if dish in have_choose or dish in lunch_choose:
+			if dish in have_choose or dish in lunch_choose or dish in Breakfast:
 				continue
-				
+			
 			dish_heat = eval(Dish2nur[dish][10])
 			dish_carbs = eval(Dish2nur[dish][2])
 			dish_fat = eval(Dish2nur[dish][1])
@@ -150,7 +153,7 @@ def Recoomend_supper():
 			if len(supper_list) >= 4: #默认推荐为三种菜品+主食
 				break;
 				
-			if dish in have_choose or dish in supper_choose:
+			if dish in have_choose or dish in supper_choose or dish in Breakfast:
 				continue
 				
 			dish_heat = eval(Dish2nur[dish][10])
@@ -169,8 +172,8 @@ def Recoomend_supper():
 		
 	return supper_list # 字符串列表，例如["馒头*1"]
 	
-# if __name__ == '__main__': 调试用
-# 	a = Recommend_lunch()
-# 	b = Recoomend_supper()
-# 	print(a)
-# 	print(b)
+if __name__ == '__main__': #调试用
+	aa = Recommend_lunch()
+	bb = Recoomend_supper()	
+	print(aa)
+	print(bb)
