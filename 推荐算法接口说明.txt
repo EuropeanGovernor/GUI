@@ -1,9 +1,9 @@
 1.###推荐午餐
-	def Recoomend_lunch():
+	def Recommend_lunch():
 	return lunch_list
 	######输出的是推荐午餐的菜名字符串列表。比如['馒头*2','叉烧肉*4','西红柿炒鸡蛋*5']
 
 2.###推荐晚餐
-	def Recoomend_supper():
+	def Recommend_supper():
 	return supper_list
 	######输出的是推荐晚餐的菜名字符串列表。比如['馒头*2','叉烧肉*4','西红柿炒鸡蛋*5']
