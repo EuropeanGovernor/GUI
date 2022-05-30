@@ -128,7 +128,7 @@ def Recommend_lunch():
 	return lunch_list # 字符串列表，例如["馒头*1"]
 	
 	
-def Recoomend_supper():
+def Recommend_supper():
 	#recommend for supper
 	normal_intake = Analyze_current_body_state()
 	recommend_intake = [i * 0.40 for i in normal_intake]
