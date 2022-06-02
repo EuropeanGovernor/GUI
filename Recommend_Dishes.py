@@ -10,10 +10,10 @@ Dish2nur = dict()
 Search_limit = [0.28, 0.32, 0.40] #每一种菜品分配的比例值
 
 Breakfast = ["小米粥", "油条", "烧麦", "韭菜大包子", "胡萝卜大包子", "肉大包子", "肉馅饼", "韭菜馅饼", "芝麻饼", 
-				"素大包", "开花馒头", "花卷", "南瓜饼", "土豆丝卷饼", "油炸糕", "豆沙饼", "肉夹馍", "素包子"] # 去掉早餐
+				"素大包", "开花馒头", "花卷", "南瓜饼", "土豆丝卷饼", "油炸糕", "豆沙饼", "肉夹馍", "素包子", "煮鸡蛋"] # 去掉早餐
 
 Staple_food = ["炒饭", "烧饼加鸡排", "烧饼加肠", "西红柿面", "炒意大利面", "尖椒鸡蛋拌面", "加肉拉面", "笋尖拉面", 
-				"西红柿鸡蛋面", "孜然鸡丁盖饭", "土豆牛肉拌面", "拉面", "手擀面", "刀削面", ] # 面食, 盖饭等
+				"西红柿鸡蛋面", "孜然鸡丁盖饭", "土豆牛肉拌面", "拉面", "手擀面", "刀削面" ] # 面食, 盖饭等
 
 for dish in today_menu:
 	tmp = list()
@@ -122,7 +122,7 @@ def Recommend_lunch():
 			if len(lunch_list) >= 4: #默认推荐为三种菜品+主食
 				break;
 				
-			if dish in have_choose or dish in lunch_choose or dish in Breakfast:
+			if dish in have_choose or dish in lunch_choose or dish in Breakfast or dish in Staple_food:
 				continue
 			
 			dish_heat = eval(Dish2nur[dish][10])
@@ -174,7 +174,7 @@ def Recommend_supper():
 			if len(supper_list) >= 4: #默认推荐为三种菜品+主食
 				break;
 				
-			if dish in have_choose or dish in supper_choose or dish in Breakfast:
+			if dish in have_choose or dish in supper_choose or dish in Breakfast or dish in Staple_food:
 				continue
 				
 			dish_heat = eval(Dish2nur[dish][10])
