@@ -99,7 +99,7 @@ def Recommend_lunch():
 		random.shuffle(Staple_food)
 		for food in Staple_food:
 			if not(food in have_choose) and food in today_menu:
-				return food # 推荐面食或者盖饭类
+				return "*".join([food, "1"]) # 推荐面食或者盖饭类
 	
 	random.shuffle(today_menu)
 	random.shuffle(today_menu)
@@ -151,7 +151,7 @@ def Recommend_supper():
 		random.shuffle(Staple_food)
 		for food in Staple_food:
 			if not(food in have_choose) and food in today_menu:
-				return food # 推荐面食或者盖饭类
+				return "*".join([food, "1"]) # 推荐面食或者盖饭类
 				
 	random.shuffle(today_menu)
 	random.shuffle(today_menu)
