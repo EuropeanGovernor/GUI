@@ -16,7 +16,7 @@ Breakfast = ["小米粥", "油条", "烧麦", "韭菜大包子", "胡萝卜大�
 
 Staple_food = ["炒饭", "烧饼加鸡排", "烧饼加肠", "西红柿面", "炒意大利面", "尖椒鸡蛋拌面", "加肉拉面", "笋尖拉面", 
 				"西红柿鸡蛋面", "孜然鸡丁盖饭", "土豆牛肉拌面", "拉面", "手擀面", "刀削面", "面条", "米线", "抄手", "炸酱面", "尖椒鸡蛋拌面", 
-				"臊子面" ,"红烧牛肉面" , "笋尖拉面" ] # 面食, 盖饭等
+				"臊子面" ,"红烧牛肉面" , "笋尖拉面", "西红柿鸡蛋盖饭" ] # 面食, 盖饭等
 
 for dish in today_menu:
 	tmp = list()
@@ -98,11 +98,14 @@ def Recommend_lunch():
 	normal_intake = Analyze_current_body_state()
 	recommend_intake = [i * 0.45 for i in normal_intake]
 	
+	Staple_choose = list()
+	
 	if random_number():
 		random.shuffle(Staple_food)
 		for food in Staple_food:
 			if not(food in have_choose) and food in today_menu:
-				return "*".join([food, "1"]) # 推荐面食或者盖饭类
+				Staple_choose.append("*".join([food, "1"]))
+				return Staple_choose # 推荐面食或者盖饭类
 	
 	random.shuffle(today_menu)
 	random.shuffle(today_menu)
@@ -150,11 +153,14 @@ def Recommend_supper():
 	normal_intake = Analyze_current_body_state()
 	recommend_intake = [i * 0.40 for i in normal_intake]
 	
+	Staple_choose = list()
+	
 	if random_number():
 		random.shuffle(Staple_food)
 		for food in Staple_food:
 			if not(food in have_choose) and food in today_menu:
-				return "*".join([food, "1"]) # 推荐面食或者盖饭类
+				Staple_choose.append("*".join([food, "1"]))
+				return Staple_choose # 推荐面食或者盖饭类
 				
 	random.shuffle(today_menu)
 	random.shuffle(today_menu)
