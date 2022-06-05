@@ -9,12 +9,16 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtSql import *
 from PyQt5.QtGui import *
-from PyQt5.QtChart import *
 from PyQt5 import QtWidgets,QtGui,QtSql
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FC
 from PyQt5.QtWidgets import QApplication, QPushButton, QMainWindow, QVBoxLayout, QWidget
 import datetime
+import urllib.request
+import gzip
+import json
+import borax
+from borax.calendars.festivals2 import FestivalLibrary
 
 import selenium
 import Get_Daily_Menu
@@ -22,8 +26,6 @@ import Recommend_Dishes
 import s
 plt.rcParams["font.sans-serif"] = ["SimHei"]  # 设置字体
 plt.rcParams["axes.unicode_minus"] = False  # 该语句解决图像中的“-”负号的乱码问题
-
-
 class MyQLabel(QLabel):
     DoubleClicked = pyqtSignal()
     def __int__(self):
@@ -60,11 +62,18 @@ class Mainui(QMainWindow,QWidget):
         tool6.triggered.connect(self.meal)
         tool7.triggered.connect(self.assess)
 
+        # self.desktop = QApplication.desktop()
+        # # 获取显示器分辨率大小
+        # self.screenRect = self.desktop.screenGeometry()
+        # self.height =self.screenRect.height()/1440
+        # self.width = self.screenRect.width()/2160
+
         self.main_widget = QtWidgets.QWidget()
         self.label = QtWidgets.QLabel(self.main_widget)
         png = QPixmap()
         png.load("./3.jpg")
         self.label.setPixmap(png)
+        self.label.resize(2000,1236)
         self.setCentralWidget(self.main_widget)
 
         label1 = QLabel(self)
@@ -76,6 +85,9 @@ class Mainui(QMainWindow,QWidget):
         label2.setGeometry(0, 0, 1000, 300)  # 设置标签的大小,标签不能出主窗口，所以move时候要注意
         label2.setText('<font style="font-family:方正舒体" style="font-size:60px" color=black>为您推荐：</font>')
         label2.move(1120, 230)
+
+        self.label4 = QLabel(self)  # 天气
+        self.get_weather_data()
 
         self.statusBar = QStatusBar()
         self.setStatusBar(self.statusBar)
@@ -96,9 +108,9 @@ class Mainui(QMainWindow,QWidget):
         girl.resize(100,100)
         girl.setToolTip('我是女生')
         girl.DoubleClicked.connect(self.F)
-        girl.move(1900,1110)
+        girl.move(1900, 1110)
 
-        self.label3 = QLabel(self)
+        self.label3 = QLabel(self)#刷新
         refresh=MyQLabel(self)
         refreshs=QPixmap()
         refreshs.load('./refresh.png')
@@ -106,7 +118,7 @@ class Mainui(QMainWindow,QWidget):
         refresh.resize(100,100)
         refresh.setToolTip('刷新')
         refresh.DoubleClicked.connect(self.ref)
-        refresh.move(1400,340)
+        refresh.move(1400, 340)
 
         urls=['http://mp.weixin.qq.com/s?__biz=MzU4NzI3ODUyNA==&mid=2247504342&idx=2&sn=f6cd0d421badc032bc02581a1cf38c97&chksm=fdece005ca9b6913a54e2fbfac188ced7ced6e6404a87bfdfa8e51c5fc019e0bdb36c0cb7d8e#rd',
               'http://mp.weixin.qq.com/s?__biz=MzU4NzI3ODUyNA==&mid=2247504317&idx=2&sn=b710640e75bf01f3203de2dba2c6ac3c&chksm=fdece06eca9b697804febd73579f5a4858affe3835aeff76eaa15fa1638be64e765c1d454eae#rd',
@@ -132,6 +144,7 @@ class Mainui(QMainWindow,QWidget):
         text = ''
         for i in range(len(temp)):
             r = temp[i].split('*')
+            print(r)
             text += f'{r[0]}'.ljust(10, '…')
             text += f'{r[1]}\n\n'
         self.label3.setGeometry(0, 0, 1000, 600)
@@ -139,7 +152,6 @@ class Mainui(QMainWindow,QWidget):
         self.label3.setText(text)
         self.label3.setWordWrap(True)
         self.label3.move(1020, 410)
-
     def M(self):
         con = sqlite3.connect('.\db.db')
         cur = con.cursor()
@@ -162,8 +174,7 @@ class Mainui(QMainWindow,QWidget):
         dialog = QDialog()
         dialog.setWindowTitle('历史菜单')
         dialog.setWindowModality(Qt.ApplicationModal)
-        dialog.setFixedSize(1650, 927)
-
+        dialog.setFixedSize(1600, 900)
         min=QDate.currentDate().addDays(-15).toString(Qt.DefaultLocaleLongDate)
         max=QDate.currentDate().addDays(0).toString(Qt.DefaultLocaleLongDate)
         std=re.compile('\d+')
@@ -172,27 +183,53 @@ class Mainui(QMainWindow,QWidget):
         self.cal=QCalendarWidget(dialog)
         self.cal.setMinimumDate(QDate(int(result0[0]),int(result0[1]),int(result0[2])))
         self.cal.setMaximumDate(QDate(int(result1[0]),int(result1[1]),int(result1[2])))
-        self.cal.resize(750,927)
+        self.cal.resize(750,900)
         self.cal.setGridVisible(True)
-
         pic = QLabel(dialog)
         png = QPixmap()
         png.load("./menu.jpg")
-        pic.resize(950, 927)
+        pic.resize(950, 900)
         pic.setPixmap(png)
         pic.move(750,0)
         hbox = QHBoxLayout(dialog)
         dialog.setLayout(hbox)
-
         self.cal.clicked.connect(self.show_date)
         self.label = QLabel(dialog)
         self.label.setGeometry(0, 0, 1000, 930)
         self.label.setStyleSheet("QLabel{color:green;font-size:30px;font-family:'宋体';}")
         self.label.setWordWrap(True)
         self.label.move(1050, -120)
-
-
         dialog.exec()
+    def get_weather_data(self):
+        url1 = 'http://wthrcdn.etouch.cn/weather_mini?city=' + urllib.parse.quote('昌平')
+        weather_data = urllib.request.urlopen(url1).read()
+        # 读取网页数据
+        weather_data = gzip.decompress(weather_data).decode('utf-8')
+        # 解压网页数据
+        weather_dict = json.loads(weather_data)
+        # 将json数据转换为dict数据
+        forecast = weather_dict.get('data').get('forecast')
+        wendu=weather_dict.get('data').get('wendu')
+        # ganmao=weather_dict.get('data').get('ganmao')
+        high=forecast[0].get('high').split('高温')
+        low=forecast[0].get('low').split('低温')
+        type=forecast[0].get('type')
+
+        temp = ''
+        library = FestivalLibrary.load_builtin()
+        names = library.get_festival_names(datetime.date.today())
+        if len(names) > 0:
+            temp+=f'今天是{names[0]}\n\n'
+        temp+=f'温度：{wendu}℃\n\n'
+        # temp+=f'感冒：{ganmao}\n\n'
+        temp+=f'高温:{high[1]}\n\n'
+        temp+=f'低温:{low[1]}\n\n'
+        temp+=f'天气：{type}'
+        self.label4.setStyleSheet("QLabel{color:purple;font-size:40px;font-family:'楷体';}")
+        self.label4.setWordWrap(True)
+        self.label4.setText(temp)
+        self.label4.setGeometry(0,0,500,500)
+        self.label4.move(50,100)
 
     def show_date(self):
         self.date = self.cal.selectedDate()
@@ -203,12 +240,11 @@ class Mainui(QMainWindow,QWidget):
             temp += f'{a[0]}'.ljust(10, '…')
             temp += f'{a[1]}\n'
         self.label.setText(temp)
-
     def statistic(self):
         dialog = QDialog()
         dialog.setWindowTitle('个人数据')
         dialog.setWindowModality(Qt.ApplicationModal)
-        dialog.resize(1500, 927)
+        dialog.resize(1500, 900)
 
         con= sqlite3.connect(".\db.db")
         cursor = con.cursor()
@@ -218,15 +254,7 @@ class Mainui(QMainWindow,QWidget):
         for row in content:
             y.append(float(row[1]))
             z.append(row[0])
-
-        # date0=datetime.datetime.strptime(z[0], "%Y-%m-%d").date()
-        # date1=datetime.datetime.strptime(z[len(y)-1], "%Y-%m-%d").date()
-        # for i in range(1,len(y)):
-        #     date2 = datetime.datetime.strptime(z[i], "%Y-%m-%d").date()
-        #     x.append((date2-date0).days/(date1-date0).days)
-
         pg.setConfigOptions(antialias=True, foreground=QColor(0, 0, 0))
-
         xdict = dict(enumerate(z))
         stringaxis = pg.AxisItem(orientation='bottom')
         stringaxis.setTicks([xdict.items()])
@@ -346,19 +374,24 @@ class Mainui(QMainWindow,QWidget):
         cur.execute(sql1, [current_date])
         sql2 = 'UPDATE status set name=?'
         if 'toothache' in t:
-            QDesktopServices.openUrl(QUrl("https://dxy.com/article/320"))
+            url=['https://dxy.com/article/2488','https://dxy.com/article/9460',"https://dxy.com/article/320"]
+            QDesktopServices.openUrl(QUrl(url[random.randint(0, 3)]))
             cur.execute(sql2, ['牙痛'])
         elif 'allergic' in t:
-            QDesktopServices.openUrl(QUrl("https://dxy.com/article/3851"))
+            url=['https://dxy.com/article/5847','https://dxy.com/article/2627',"https://dxy.com/article/3851"]
+            QDesktopServices.openUrl(QUrl(url[random.randint(0, 3)]))
             cur.execute(sql2, ['过敏'])
         elif 'menstrual' in t:
-            QDesktopServices.openUrl(QUrl("https://dxy.com/article/3040"))
+            url=['https://dxy.com/article/16823',"https://dxy.com/article/3040",'https://dxy.com/article/79314']
+            QDesktopServices.openUrl(QUrl(url[random.randint(0, 3)]))
             cur.execute(sql2, ['生理期'])
         elif 'headache' in t:
-            QDesktopServices.openUrl(QUrl("https://dxy.com/article/7722"))
+            url=['https://dxy.com/article/6879',"https://dxy.com/article/7722",'https://dxy.com/article/6253']
+            QDesktopServices.openUrl(QUrl(url[random.randint(0, 3)]))
             cur.execute(sql2, ['头痛'])
         elif 'stomachache' in t:
-            QDesktopServices.openUrl(QUrl("https://dxy.com/article/5622"))
+            url=['https://dxy.com/article/3684',"https://dxy.com/article/5622",'https://dxy.com/article/16347']
+            QDesktopServices.openUrl(QUrl(url[random.randint(0, 3)]))
             cur.execute(sql2,['胃痛'])
         elif 'healthy' in t:
             url=['https://dxy.com/baike/category/24834?tag_id=0',"https://dxy.com/baike/category/24838?tag_id=0",
@@ -373,8 +406,11 @@ class Mainui(QMainWindow,QWidget):
     def meal(self):
         self.child_window.show()
     def center(self):
+        #将这个控件(QWidget)的几何内容(宽高位置等)，赋值给qr
         qr = self.frameGeometry()
+        #计算出显示器的屏幕分辨率，得到中心点
         cp = QDesktopWidget().availableGeometry().center()
+        #移动
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 class Child2(QTabWidget):
@@ -388,7 +424,6 @@ class Child2(QTabWidget):
         self.addTab(self.tab2, 'Tab2')
         self.tab1UI()
         self.tab2UI()
-
     def tab1UI(self):
         self.setTabText(0, "统计")
         self.fig = plt.Figure()
@@ -397,19 +432,20 @@ class Child2(QTabWidget):
         layout = QVBoxLayout()
         layout.addWidget(self.canvas)
         self.tab1.setLayout(layout)
-
     def slot_btn_start(self):
         ax = self.fig.add_subplot(111)
-        x = ['脂肪', '蛋白质', '碳水','VA','VB6','VC','钙','铁','锌','膳食纤维','热量']
+        x = ['脂肪', '蛋白质', '碳水','VA','VB6','VC','钙','铁','锌','膳食纤维','热量','推荐量']
         y=s.week_assess()[0]
+        y.append(1)
         ax.cla()
         ax.barh(x, y)
         ax.title.set_text('上周摄入达推荐值：')
         ax.title.set_size(30)
+        ax.set_yticks(x)  # 使用axis.set_xticks固定刻度位置   (新添加内容)
+        ax.set_yticklabels(x)  # 将时间戳作为x轴标签
         ax.set_yticklabels(x,fontsize=20)
         ax.tick_params(axis='x',labelsize=20)
         self.canvas.draw()
-
     def tab2UI(self):
         self.setTabText(1, "建议")
         pic = QLabel(self.tab2)
@@ -466,12 +502,15 @@ class Child(QTabWidget):
             else:
                 data=[0,0,0,0]
         ax = self.fig.add_subplot(111)
-        x = ['热量', '脂肪', '蛋白质', '碳水']
-        y = data
+        x = ['热量',  '蛋白质', '脂肪','碳水','推荐量']
+        rule=s.get_weekstandard()
+        y=[float(data[0])/rule[10],float(data[1])/rule[0],float(data[2])/rule[1],float(data[3])/rule[2],1]
         ax.cla()
         ax.barh(x, y)
         ax.title.set_text('今日摄入达推荐值：')
         ax.title.set_size(30)
+        ax.set_yticks(x)  # 使用axis.set_xticks固定刻度位置   (新添加内容)
+        ax.set_yticklabels(x)  # 将时间戳作为x轴标签
         ax.set_yticklabels(x, fontsize=20)
         ax.tick_params(axis='x', labelsize=20)
         self.canvas.draw()

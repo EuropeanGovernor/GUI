@@ -161,7 +161,10 @@ def week_assess():##周食谱评估
             for i in range(11):
                 nutrition[i]+=a[i]
         nutrition=[i*7/len(alist) for i in nutrition]
-        criterion=[weight*7,weight*7,weight*35,5000*7,30*7,100*7,1000*7,12.5*7,1.5*7,30*7,weight*280]
+        vd=get_latest_pd()
+        vd2=get_sex()
+        dd=list(get_f(vd[1],vd[0],vd2))
+        criterion=[dd[3]*7,dd[2]*7,dd[1]*7,5000*7,30*7,100*7,1000*7,12.5*7,1.5*7,30*7,dd[0]*7]
     ###正常人一天：蛋白质（1g*weight），脂肪（1g*weight），碳水化合物（5g*weight）
         # 维a(5000国际单位)，维b（1.5mg）,维c（100mg）
         #钙（1000mg）,铁（12.5mg），锌（15mg）
@@ -172,70 +175,70 @@ def week_assess():##周食谱评估
         advice=''
         num=1
         if x[0]<0.75:
-            advice+=str(num)+'.'+'您上周蛋白质摄入不足，若不及时调整，可能会导致水肿，身体消瘦，贫血，发育不良等'+'\n'
+            advice+=str(num)+'.'+'您上周蛋白质摄入不足，长期可能会导致水肿，身体消瘦，贫血，发育不良等'+'\n\n'
             num+=1
         if x[0]>1.25:
-            advice+=str(num)+'.'+'您上周蛋白质摄入超标，若不及时调整，可能会加重肾脏和肝的负担，痛风，还可能引起泌尿系统结石'+'\n'
+            advice+=str(num)+'.'+'您上周蛋白质摄入超标，长期可能会加重肾脏和肝的负担，痛风，还可能引起泌尿系统结石'+'\n\n'
             num+=1
         if x[1]<0.75:
-            advice+=str(num)+'.'+'您上周脂肪摄入不足，若不及时调整，可能会导致营养不良，肠胃功能下降皮肤受损，维生素D缺乏'+'\n'
+            advice+=str(num)+'.'+'您上周脂肪摄入不足，长期可能会导致营养不良，肠胃功能下降皮肤受损，维生素D缺乏'+'\n\n'
             num+=1
         if x[1]>1.25:
-            advice+=str(num)+'.'+'您上周脂肪摄入超标，若不及时调整，可能会增加肠胃负担，导致身体肥胖，高血脂高血压，脂肪肝等'+'\n'
+            advice+=str(num)+'.'+'您上周脂肪摄入超标，长期可能会增加肠胃负担，导致身体肥胖，高血脂高血压，脂肪肝等'+'\n\n'
             num+=1
         if x[2]<0.75:
-            advice+=str(num)+'.'+'您上周碳水化合物摄入不足，若不及时调整，可能会造成营养不良，低血糖，易头晕心慌'+'\n'
+            advice+=str(num)+'.'+'您上周碳水化合物摄入不足，长期可能会造成营养不良，低血糖，易头晕心慌'+'\n\n'
             num+=1
         if x[2]>1.25:
-            advice+=str(num)+'.'+'您上周碳水化合物摄入超标，若不及时调整，可能会变胖'+'\n'
+            advice+=str(num)+'.'+'您上周碳水化合物摄入超标，长期可能会变胖'+'\n\n'
             num+=1
         if x[3]<0.75:
-            advice+=str(num)+'.'+'您上周维a摄入不足，若不及时调整，可能会导致皮肤干燥，夜盲症，发育迟缓，食欲减退等'+'\n'
+            advice+=str(num)+'.'+'您上周维a摄入不足，长期可能会导致皮肤干燥，夜盲症，发育迟缓，食欲减退等'+'\n\n'
             num+=1
         if x[3]>1.25:
-            advice+=str(num)+'.'+'您上周维a摄入超标，若不及时调整，可能会维a慢性中毒，导致关节酸痛，脱发，头痛等'+'\n'
+            advice+=str(num)+'.'+'您上周维a摄入超标，长期可能会维a慢性中毒，导致关节酸痛，脱发，头痛等'+'\n\n'
             num+=1
         if x[4]<0.75:
-            advice+=str(num)+'.'+'您上周维b6摄入不足，若不及时调整，可能会导致口腔溃疡，脚气病，牙周炎，神经衰弱等'+'\n'
+            advice+=str(num)+'.'+'您上周维b6摄入不足，长期可能会导致口腔溃疡，脚气病，牙周炎，神经衰弱等'+'\n\n'
             num+=1
         if x[4]>1.25:
-            advice+=str(num)+'.'+'您上周维b摄入超标，若不及时调整，可能会导致维b慢性中毒，头晕眼花，心律失常，发热呕吐'+'\n'
+            advice+=str(num)+'.'+'您上周维b摄入超标，长期可能会导致维b慢性中毒，头晕眼花，心律失常，发热呕吐'+'\n\n'
             num+=1
         if x[5]<0.75:
-            advice+=str(num)+'.'+'您上周维c摄入不足，若不及时调整，可能会导致皮肤黏膜出血，骨骼病变，疲倦乏力'+'\n'
+            advice+=str(num)+'.'+'您上周维c摄入不足，长期可能会导致皮肤黏膜出血，骨骼病变，疲倦乏力'+'\n\n'
             num+=1
         if x[5]>1.25:
-            advice+=str(num)+'.'+'您上周维c摄入超标，若不及时调整，可能会导致尿结石，产生骨骼疾病。'+'\n'
+            advice+=str(num)+'.'+'您上周维c摄入超标，长期可能会导致尿结石，产生骨骼疾病。'+'\n\n'
             num+=1
         if x[6]<0.75:
-            advice+=str(num)+'.'+'您上周钙摄入不足，若不及时调整，可能会导致骨质疏松，抽筋，佝偻病，发育迟缓等'+'\n'
+            advice+=str(num)+'.'+'您上周钙摄入不足，长期可能会导致骨质疏松，抽筋，佝偻病，发育迟缓等'+'\n\n'
             num+=1
         if x[6]>1.25:
-            advice+=str(num)+'.'+'您上周钙摄入超标，若不及时调整，可能会导致肠胃损伤，软组织钙化，泌尿系统结石'+'\n'
+            advice+=str(num)+'.'+'您上周钙摄入超标，长期可能会导致肠胃损伤，软组织钙化，泌尿系统结石'+'\n\n'
             num+=1
         if x[7]<0.75:
-            advice+=str(num)+'.'+'您上周铁摄入不足，若不及时调整，可能会导致贫血，四肢无力，昏迷甚至休克'+'\n'
+            advice+=str(num)+'.'+'您上周铁摄入不足，长期可能会导致贫血，四肢无力，昏迷甚至休克'+'\n\n'
             num+=1
         if x[7]>1.25:
-            advice+=str(num)+'.'+'您上周铁摄入超标，若不及时调整，可能会导致肺脾淋巴系统铁沉积，影响心脑血管，甚至食道癌大肠癌'+'\n'
+            advice+=str(num)+'.'+'您上周铁摄入超标，长期可能会导致肺脾淋巴系统铁沉积，影响心脑血管，甚至食道癌大肠癌'+'\n\n'
             num+=1
         if x[8]<0.75:
-            advice+=str(num)+'.'+'您上周锌摄入不足，若不及时调整，可能会发育不良，厌食挑食，免疫力低下'+'\n'
+            advice+=str(num)+'.'+'您上周锌摄入不足，长期可能会发育不良，厌食挑食，免疫力低下'+'\n\n'
             num+=1
         if x[8]>1.25:
-            advice+=str(num)+'.'+'您上周锌摄入超标，若不及时调整，可能会导致锌中毒，消化道糜烂出血，呼吸道炎症，神经功能障碍'+'\n'
+            advice+=str(num)+'.'+'您上周锌摄入超标，长期可能会导致锌中毒，消化道糜烂出血，呼吸道炎症，神经功能障碍'+'\n\n'
             num+=1
         if x[9]<0.75:
-            advice+=str(num)+'.'+'您上周膳食纤维摄入不足，若不及时调整，可能会引起痔疮，便秘，诱发结肠癌和心脑血管疾病'+'\n'
+            advice+=str(num)+'.'+'您上周膳食纤维摄入不足，长期可能会引起痔疮，便秘，诱发结肠癌和心脑血管疾病'+'\n\n'
             num+=1
         if x[9]>1.25:
-            advice+=str(num)+'.'+'您上周膳食纤维摄入超标，若不及时调整，可能会引起肠胃不适，影响无机盐的吸收'+'\n'
+            advice+=str(num)+'.'+'您上周膳食纤维摄入超标，长期可能会引起肠胃不适，影响无机盐的吸收'+'\n\n'
             num+=1
         if x[10]<0.75:
-            advice+=str(num)+'.'+'您上周热量摄入不足，若不及时调整，可能会导致呆滞，记忆力减退，神志不清，浑身乏力'+'\n'
+            advice+=str(num)+'.'+'您上周热量摄入不足，长期可能会导致呆滞，记忆力减退，神志不清，浑身乏力'+'\n\n'
             num+=1
         if x[10]>1.25:
-            advice+=str(num)+'.'+'您上周热量摄入超标，若不及时调整，可能会导致肥胖，进而诱发乳腺癌大肠癌'+'\n'
+            advice+=str(num)+'.'+'您上周热量摄入超标，长期可能会导致肥胖，进而诱发乳腺癌大肠癌'+'\n\n'
             num+=1
         return x,advice
     except:
@@ -243,7 +246,7 @@ def week_assess():##周食谱评估
 ###  x是一个有11个浮点数的列表，例如x=[0.71,0.88,0.98,0.78,0.45,0.66,0.77,0.88,0.99,0.85]
 #    比如x[0]=0.71,表示这周（总摄入蛋白质）比（推荐摄入）=71%
 ##   advice是字符串，表示给出的建议
-# print(week_assess())
+# week_assess()
 def get_status():#####返回字符串列表，没有则为空列表
     con = sqlite3.connect('db.db')
     cursor_obj = con.cursor()
@@ -253,9 +256,36 @@ def get_status():#####返回字符串列表，没有则为空列表
     if a:
         a=[a[0][0]]
     return a
+def get_sex():
+    con=sqlite3.connect('db.db')
+    cursor_obj=con.cursor()
+    aa=cursor_obj.execute('SELECT sex FROM sex').fetchall()[0][0]
+    return aa
+
+# print(get_sex())
 
 
+def call_BMI(weight,height):
+    BMI=height/(weight**2)
+    return BMI
+def get_f(weight,height,gender):
+    if gender=="F":
+        tdee=1.25*(10*weight+6.25*height-5*19-161)
+    else:
+        tdee=1.25*(10*weight+6.25*height-5*19+5)
+    carbon=tdee*0.5/4
+    fat=tdee*0.25/9
+    protein=tdee*0.25/4
+    return round(tdee,0),round(carbon,0),round(fat,0),round(protein,0)
+#依次打印推荐热量、碳水、脂肪、蛋白
+# print(nutrition(65,180,'M'))
 
+def get_weekstandard():
+    vd = get_latest_pd()
+    vd2 = get_sex()
+    dd = list(get_f(vd[1], vd[0], vd2))
+    criterion = [dd[3]*7,dd[2]*7,dd[1]*7,5000*7,30*7,100*7,1000*7,12.5*7,1.5*7,30*7,dd[0]*7]
+    return criterion
 
 
 
