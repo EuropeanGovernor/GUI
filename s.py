@@ -164,7 +164,7 @@ def week_assess():##周食谱评估
         vd=get_latest_pd()
         vd2=get_sex()
         dd=list(get_f(vd[1],vd[0],vd2))
-        criterion=[dd[3]*7,dd[2]*7,dd[1]*7,5000*7,30*7,100*7,1000*7,12.5*7,1.5*7,30*7,dd[0]*7]
+        criterion=[dd[3]*7,dd[2]*7,dd[1]*7,5000*7,1.5*7,100*7,1000*7,12.5*7,15*7,30*7,dd[0]*7]
     ###正常人一天：蛋白质（1g*weight），脂肪（1g*weight），碳水化合物（5g*weight）
         # 维a(5000国际单位)，维b（1.5mg）,维c（100mg）
         #钙（1000mg）,铁（12.5mg），锌（15mg）
@@ -284,7 +284,7 @@ def get_weekstandard():
     vd = get_latest_pd()
     vd2 = get_sex()
     dd = list(get_f(vd[1], vd[0], vd2))
-    criterion = [dd[3]*7,dd[2]*7,dd[1]*7,5000*7,30*7,100*7,1000*7,12.5*7,1.5*7,30*7,dd[0]*7]
+    criterion = [dd[3]*7,dd[2]*7,dd[1]*7,5000*7,1.5*7,100*7,1000*7,12.5*7,15*7,30*7,dd[0]*7]
     return criterion
 print(get_weekstandard())
 
